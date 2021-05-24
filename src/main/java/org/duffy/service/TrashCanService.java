@@ -7,4 +7,5 @@ import org.duffy.domain.TrashCanVO;
 public interface TrashCanService {
 
 	public List<TrashCanVO> getList();
+	public Float[] findGeoPoint(String location);
 }

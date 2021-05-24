@@ -15,11 +15,20 @@ import lombok.extern.log4j.Log4j;
 public class TrashCansServiceTests {
 
 	@Autowired
-	private TrashCanMapper mapper;
+	private TrashCanService service;
 	
 	@Test
 	public void testGetLIst() {
 	
-		mapper.getList().forEach(log::info);
+		service.getList().forEach(log::info);
+	}
+	
+	@Test
+	public void testGetLocaion() {
+		
+		String location = "대전광역시 유성구 궁동";
+		Float[] coords = service.findGeoPoint(location);
+
+		System.out.println(location + ": " + coords[0] + ", " + coords[1]);
 	}
 }

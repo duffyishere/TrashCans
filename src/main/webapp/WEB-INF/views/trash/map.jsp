@@ -13,8 +13,16 @@
 
     <title>쓰래기통 위치</title>
 
-    <!-- Bootstrap Core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+
+	<!-- 합쳐지고 최소화된 최신 CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+<!-- 부가적인 테마 -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+<!-- 합쳐지고 최소화된 최신 자바스크립트 -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
 
     <!--     <link href="/resources/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -45,34 +53,27 @@
 
 <body>
 
-<div id="wrapper">
-
-    <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="index.html">Trash can</a>
-        </div>
-        <!-- /.navbar-header -->
-
-        <ul class="nav navbar-top-links navbar-right">
-            <li class="dropdown">
-                <a class="dropdown-toggle" href="#">
-                    Map
-                </a>
-            </li>
-            <!-- /.dropdown -->
-        </ul>
-        <!-- /.navbar-top-links -->
-    </nav>
-
+<div id="wrapper" style="height: 100%">
     <div id="page-wrapper" style="padding: 0">
-        <div id="map" style="width:95%;height:95%;padding-top: 30px;"></div>
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header" style="text-align: center">TrashCans</h1>
+                <ul class="nav nav-tabs" style="width: 100%">
+                    <li role="presentation" class="active" style="width: 33%; text-align: center"><a href="#">Map</a></li>
+                    <li role="presentation" style="width: 33%; text-align: center"><a href="#" >AI Separate Collection</a></li>
+                    <li role="presentation" style="width: 33%; text-align: center"><a href="#" >Notice</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div id="map" style="width:100%;height:95%;padding-top: 30px; margin: 0 auto"></div>
+            <!-- /#page-wrapper -->
+            </div>
+        </div>
     </div>
-    <!-- /#page-wrapper -->
-
 </div>
 <!-- /#wrapper -->
-
 
 <script>
     $(document).ready(function () {
@@ -88,6 +89,11 @@
 
             let map = new kakao.maps.Map(container, options);
 
+            map.setLevel(4);
+            map.relayout();
+
+            map.setLevel(1);
+            map.relayout();
 
             let count = 0;
             // 주소-좌표 변환 객체를 생성합니다
