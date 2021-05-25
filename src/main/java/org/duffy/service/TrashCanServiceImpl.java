@@ -1,20 +1,24 @@
 package org.duffy.service;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.duffy.domain.TrashCanVO;
 import org.duffy.mapper.TrashCanMapper;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.google.code.geocoder.Geocoder;
-import com.google.code.geocoder.GeocoderRequestBuilder;
-import com.google.code.geocoder.model.GeocodeResponse;
-import com.google.code.geocoder.model.GeocoderRequest;
-import com.google.code.geocoder.model.GeocoderResult;
-import com.google.code.geocoder.model.GeocoderStatus;
-import com.google.code.geocoder.model.LatLng;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -35,45 +39,87 @@ public class TrashCanServiceImpl implements TrashCanService{
 	}
 	
 
-	@Override
-	public Float[] findGeoPoint(String location) {
-		
-		if(location == null) {
-			System.out.println("no locatoin............");
-			return null;
-		}
-		
-		GeocoderRequest geocoderRequest =  new GeocoderRequestBuilder().setAddress(location).setLanguage("ko").getGeocoderRequest();
+
+	public List<List<Float>> callAPI() {
 		
 		try {
-			Geocoder geocoder = new Geocoder(); 
-			GeocodeResponse geocodeResponse = geocoder.geocode(geocoderRequest);
+			List<List<Float>> trashCansList = new ArrayList<List<Float>>();
 			
-			if(geocodeResponse.getStatus() == GeocoderStatus.OK & !geocodeResponse.getResults().isEmpty()) {
-				GeocoderResult geocoderResult = geocodeResponse.getResults().iterator().next();
-				LatLng latLng = geocoderResult.getGeometry().getLocation();
+			List<TrashCanVO> locationList = new ArrayList<>(mapper.getList());
+			
+			for(TrashCanVO locations : locationList) {
+				log.info(locations.getSerialNumber());
+				log.info(locations.getRoadName());
 				
-				Float[] coords = new Float[2];
-				coords[0] = latLng.getLat().floatValue();
-				coords[1] = latLng.getLng().floatValue();
+				StringBuilder result = new StringBuilder();
 				
+				String location = URLEncoder.encode(locations.getDetailLocation(), "UTF-8");
+				String urlStr = "https://maps.googleapis.com/maps/api/geocode/json?address="+location+"&key=AIzaSyCD5T2nz0R5159zZoIY4Csv20_8Or6bVXI";
+				URL url = new URL(urlStr);
 				
-				System.out.println("Sucess............");
+				HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection(); 
+				urlConnection.setRequestMethod("GET");
+				
+				BufferedReader br;
+				
+				br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+				
+				String returnLine;
+				
+				while((returnLine = br.readLine()) !=  null) {
+					result.append(returnLine+"\n\r");
+				}
+				
+				urlConnection.disconnect();
+				
+				List<Float> resultList = new ArrayList<Float>(); 
+				
+				JSONParser p = new JSONParser();
+				
+		        String Json = result.toString();
 
-				return coords;
-			}
-			else {
-				System.out.println("Fail............");
-				System.out.println(geocodeResponse.getStatus());
-				System.out.println(geocodeResponse.getResults());
+				JSONObject dto = (JSONObject) p.parse(Json);
 
+				JSONArray results = (JSONArray) dto.get("results");
+				
+				String status = (String) dto.get("status");
+				
+				if(status.equals("ZERO_RESULTS")) {
+					
+					resultList.add(null);
+					resultList.add(null);
+					
+					trashCansList.add(resultList);
+					log.info(trashCansList);
+				}
+				else {
+					
+					JSONObject a = (JSONObject) results.get(0);
+					
+					JSONObject geometry = (JSONObject) a.get("geometry");
+					
+					JSONObject location1 = (JSONObject) geometry.get("location");
+					
+					String[] result2 = new String[]{location1.get("lat").toString(), location1.get("lng").toString()};
+					
+					resultList.add(Float.valueOf(location1.get("lat").toString()));
+					resultList.add(Float.valueOf(location1.get("lng").toString()));
+					
+					trashCansList.add(resultList);
+					log.info(trashCansList);
+				}
 			}
 			
+			return trashCansList;
 			
-		}catch (Exception e) {
+		}catch(IOException e) {
 			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}catch(IndexOutOfBoundsException e) {
+			
 		}
-				
+			
 		return null;
 	}
 	

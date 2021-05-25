@@ -57,7 +57,7 @@
     <div id="page-wrapper" style="padding: 0">
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header" style="text-align: center">TrashCans</h1>
+                <h1 class="page-header" style="text-align: center">Trash Cans</h1>
                 <ul class="nav nav-tabs" style="width: 100%">
                     <li role="presentation" class="active" style="width: 33%; text-align: center"><a href="#">Map</a></li>
                     <li role="presentation" style="width: 33%; text-align: center"><a href="#" >AI Separate Collection</a></li>

@@ -1,5 +1,8 @@
 package org.duffy.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.duffy.mapper.TrashCanMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,11 +27,13 @@ public class TrashCansServiceTests {
 	}
 	
 	@Test
-	public void testGetLocaion() {
+	public void testCallAPI(){
+//		List<Float> list = new ArrayList<Float>(service.callAPI("경복궁역 4번출구"));
+//		
+//		log.info(list.get(0));
+//		log.info(list.get(1));
 		
-		String location = "대전광역시 유성구 궁동";
-		Float[] coords = service.findGeoPoint(location);
-
-		System.out.println(location + ": " + coords[0] + ", " + coords[1]);
+		service.callAPI();
 	}
+	
 }
