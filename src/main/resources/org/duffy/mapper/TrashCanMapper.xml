@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.duffy.mapper.TrashCanMapper">
+<select id="getList" resultType="org.duffy.domain.TrashCanVO">
+select * from tbl_trashcan
+</select>
+<update id="insert">
+update tbl_trashcan set lat = #{lat}, lng = #{lng} where tno = #{tno}
+</update>
+</mapper>

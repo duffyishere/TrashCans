@@ -36,4 +36,10 @@ public class TrashCansServiceTests {
 		service.callAPI();
 	}
 	
+	@Test
+	public void testInsertAPI() {
+		
+		service.insertAPI();
+	}
+	
 }

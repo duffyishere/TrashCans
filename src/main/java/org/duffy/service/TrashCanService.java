@@ -8,4 +8,5 @@ public interface TrashCanService {
 
 	public List<TrashCanVO> getList();
 	public List<List<Float>> callAPI();
+	public void insertAPI();
 }

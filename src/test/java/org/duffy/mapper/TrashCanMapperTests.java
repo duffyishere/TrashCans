@@ -1,5 +1,6 @@
 package org.duffy.mapper;
 
+import org.duffy.domain.TrashCanVO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,5 +22,16 @@ public class TrashCanMapperTests {
 	public void testGetList() {
 		
 		mapper.getList().forEach(log::info);
+	}
+	
+	@Test
+	public void testInsert() {
+
+		TrashCanVO trash = new TrashCanVO();
+		trash.setTno(6532L);
+		trash.setLat(null);
+		trash.setLng(null);
+		
+		mapper.insert(trash);
 	}
 }

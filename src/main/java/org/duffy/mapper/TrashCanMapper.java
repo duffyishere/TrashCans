@@ -10,9 +10,6 @@ import org.duffy.domain.TrashCanVO;
 @Mapper
 public interface TrashCanMapper {
 	
-	@Select("select * from tbl_trashcan")
 	public List<TrashCanVO> getList(); 
-	
-	@Insert("update tbl_trashcan set lat = #{lat}, lng = #{lng} where serialNumber = #{snum }and boroughName = #{boroughName}")
-	public void insert(int snum, String boroughName, Float lat, Float lng);
+	public void insert(TrashCanVO trash);
 }

@@ -106,10 +106,10 @@ public class TrashCanServiceImpl implements TrashCanService{
 					resultList.add(Float.valueOf(location1.get("lng").toString()));
 					
 					trashCansList.add(resultList);
-					log.info(trashCansList);
+					
 				}
 			}
-			
+			log.info(trashCansList);
 			return trashCansList;
 			
 		}catch(IOException e) {
@@ -121,6 +121,85 @@ public class TrashCanServiceImpl implements TrashCanService{
 		}
 			
 		return null;
+	}
+
+
+	@Override
+	public void insertAPI() {
+		try {
+			List<TrashCanVO> locationList = new ArrayList<>(mapper.getList());
+			
+			for(TrashCanVO locations : locationList) {
+				log.info(locations.getSerialNumber());
+				log.info(locations.getRoadName());
+				
+				StringBuilder result = new StringBuilder();
+				
+				String location = URLEncoder.encode(locations.getDetailLocation(), "UTF-8");
+				String urlStr = "https://maps.googleapis.com/maps/api/geocode/json?address="+location+"&key=AIzaSyCD5T2nz0R5159zZoIY4Csv20_8Or6bVXI";
+				URL url = new URL(urlStr);
+				
+				HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection(); 
+				urlConnection.setRequestMethod("GET");
+				
+				BufferedReader br;
+				
+				br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+				
+				String returnLine;
+				
+				while((returnLine = br.readLine()) !=  null) {
+					result.append(returnLine+"\n\r");
+				}
+				
+				urlConnection.disconnect();
+				
+				List<Float> resultList = new ArrayList<Float>(); 
+				
+				JSONParser p = new JSONParser();
+				
+		        String Json = result.toString();
+
+				JSONObject dto = (JSONObject) p.parse(Json);
+
+				JSONArray results = (JSONArray) dto.get("results");
+				
+				String status = (String) dto.get("status");
+				
+				if(status.equals("ZERO_RESULTS")) {
+					
+					resultList.add(null);
+					resultList.add(null);
+					
+					locations.setLat(null);
+					locations.setLat(null);
+					mapper.insert(locations);
+				}
+				else {
+					
+					JSONObject a = (JSONObject) results.get(0);
+					
+					JSONObject geometry = (JSONObject) a.get("geometry");
+					
+					JSONObject location1 = (JSONObject) geometry.get("location");
+					
+					log.info("------------------------------------------");
+					log.info(locations.getTno());
+					locations.setLat((Double)location1.get("lat"));
+					locations.setLng((Double)location1.get("lng"));
+					mapper.insert(locations);
+					
+				}
+			}
+			
+		}catch(IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}catch(IndexOutOfBoundsException e) {
+			
+		}
+		
 	}
 	
 }
